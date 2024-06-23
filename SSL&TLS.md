@@ -12,7 +12,31 @@ SSL の簡単な仕組みについては[こちらを参照](./公開鍵&秘密�
 
 ### TLS (Transport Layer Security) とは
 
-SSL のアップグレード版。 SSL の
+SSL のアップグレード版
+
+あまり多くの違いはないが、より安全な通信のためバージョンアップしていく中で SSL から TLS になった
+
+
+<br>
+
+主な相違点
+
+SSL
+- SSL ハンドシェイク: 明示的な接続 =　暗号化されないハンドシェイク
+- ハッシュ化アルゴリズム: MD5 (脆弱性が発見されたため、推奨されないアルゴリズム)
+
+TLS
+- TLS ハンドシェイク: 暗黙的な接続 = 暗号化されたハンドシェイク
+- ハッシュ化アルゴリズム: より新しく安全なアルゴリズムをサポート
+
+<br>
+<br>
+
+参考サイト
+
+- SSL と TLS の違い: [SSL と TLS にはどのような違いがありますか?](https://aws.amazon.com/jp/compare/the-difference-between-ssl-and-tls/)
+
+- 明示的接続と暗黙的接続のヒント: [[PHP]FTPS接続：暗号化モード(Explicit/Implicit)による実装方法の違い](https://qiita.com/vetra/items/5b64f63062d76263a329#explicitモード)
 
 ---
 
@@ -20,11 +44,17 @@ SSL のアップグレード版。 SSL の
 
 SSL/TLS は暗号化、ハッシュ化などの複数の技術の組み合わせ (Ciper Suite) で成り立っている
 
-- 通信内容を暗号化するための共通鍵の共有方法である **鍵交換の技術**
+- Kx: 通信内容を暗号化するための共通鍵の共有方法である **鍵交換の技術**
 
-- メッセージ認証に利用される **ハッシュ化の技術**
+- Au: デジタル署名のアルゴリズム **認証の技術**
 
-- 
+- Enc: 通信内容を暗号化する共通鍵自体のアルゴリズム **暗号化の技術**
+
+- Mac: メッセージ認証に利用される **ハッシュ化の技術**
+
+<br>
+
+詳しくは[こちら](./CipherSuite.md)を参照
 
 ---
 
@@ -323,3 +353,12 @@ TLS 1.2 との違い
 <img src="./img/TLS1.3_7.png" />
 <img src="./img/TLS1.3_8.png" />
 <img src="./img/TLS1.3_9.png" />
+
+<br>
+<br>
+
+参考サイト
+
+- TLS 1.3 ハンドシェイクの流れについてその1: [【PKI 応用】TLS 1.3 の仕組みについて詳しく解説！](https://pkiwithadcs.com/details_about_tls13/)
+
+- TLS 1.3 ハンドシェイクの流れについてその2: [TLS | SSLハンドシェイクの プロセスは？](https://www.cloudflare.com/ja-jp/learning/ssl/what-happens-in-a-tls-handshake/)
