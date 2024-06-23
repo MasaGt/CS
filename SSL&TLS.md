@@ -10,15 +10,15 @@ SSL の簡単な仕組みについては[こちらを参照](./公開鍵&秘密�
 
 ---
 
-### TLL (Transport Layer Security) とは
+### TLS (Transport Layer Security) とは
 
 SSL のアップグレード版。 SSL の
 
 ---
 
-### SSL/TSL の仕組み (概念編)
+### SSL/TLS の仕組み (概念編)
 
-SSL/TSL は暗号化、ハッシュ化などの複数の技術の組み合わせ (Ciper Suite) で成り立っている
+SSL/TLS は暗号化、ハッシュ化などの複数の技術の組み合わせ (Ciper Suite) で成り立っている
 
 - 通信内容を暗号化するための共通鍵の共有方法である **鍵交換の技術**
 
@@ -28,7 +28,7 @@ SSL/TSL は暗号化、ハッシュ化などの複数の技術の組み合わせ
 
 ---
 
-### SSl / TSL の流れ (大雑把番)
+### SSl / TLS の流れ (大雑把バージョン)
 
 1\. TCP 3way Handshake で通信を確立する
 
@@ -50,7 +50,7 @@ SSL/TSL は暗号化、ハッシュ化などの複数の技術の組み合わせ
 
 ### SSL/TLS ハンドシェイクの流れ (TSL1.2 RSA鍵交換)
 
-TCP 3way Handshake で通信が確立できたら、以下の流れで SSL Handshake を行う
+TCP 3way Handshake で通信が確立できたら、以下の流れで SSL / TLS Handshake を行う
 
 *RSA方式での鍵交換は脆弱性があるため、今は使われていない (RSAでの署名の安全性に問題はないので、そちらは使われている)
 
@@ -235,4 +235,91 @@ ClientHello ~ Certificate までは同じ
 
 *ECDHE は交換するパラメーターや、公開鍵、秘密鍵、共通鍵の計算方法が違う数学の領域 (楕円曲線の加算) を利用するイメージ
 
+<br>
+<br>
 
+参考サイト
+
+- SSL/TLS Handshakeについて1: [ハンドシェイク](https://rms.ne.jp/what-is-an-ssl-certificate/handshake.html)
+
+- SSL/TLS Handshakeについて2: [【PKI 応用】SSL/TLS ハンドシェイクをわかりやすく図解](https://pkiwithadcs.com/ssltls_handhshake/)
+
+- SSL/TLS Handshakeについて3: [TLS | SSLハンドシェイクの プロセスは？](https://www.cloudflare.com/ja-jp/learning/ssl/what-happens-in-a-tls-handshake/)
+
+- DH 鍵交換の時の ServerKeyExchange: [nginx.confの推奨設定からTLSを理解したい](https://zenn.dev/haan/articles/a1c72e56eb8004)
+
+---
+
+### SSL/TLS ハンドシェイクの流れ (TLS1.3)
+
+TLS 1.2 との違い
+- RSA　鍵交換方式、 DH 鍵交換方式 (static DH) は廃止となった = DHE か ECDHE での鍵交換になる
+
+- TLS ハンドシェイクでのやり取りがより効率的になった
+
+<br>
+
+<img src="./img/TLS1.3_1.png" />
+
+引用: [【図解】TLS v1.3の仕組み ~Handshakeシーケンス,暗号スイートをパケットキャプチャで覗いてみる~](https://milestone-of-se.nesuke.com/nw-basic/tls/tls-version-1-3/)
+
+<br>
+
+<img src="./img/TLS1.3_2.png" />
+
+引用: [【PKI 応用】TLS 1.3 の仕組みについて詳しく解説！](https://pkiwithadcs.com/details_about_tls13/)
+
+<br>
+<br>
+
+1\. ClientHello (クライアント → サーバー)
+- 以下の情報をサーバーに送信する
+
+    - クライアントで利用できる TLS のバージョン 
+    - クライアントで利用できる Cipher Suite 
+    - クライアントランダムなどのパラメーター
+    - クライアントが利用できる鍵交換アルゴリズムの上位 2 つの鍵交換アルゴリズムの種類とパラメーター
+
+<img src="./img/TLS1.3_3.png" />
+
+
+<br>
+
+2\. Server Hello ~ Finished (クライアント ← サーバー)
+
+- 以下の情報をクライアントに送信する
+
+    - 使用する TLS バージョン
+    - 使用する Cipher Suite
+    - 鍵交換アルゴリズムの合意した内容 (選択した鍵交換アルゴリズムでのサーバー側の公開鍵)
+    - サーバーランダムなどのパラメータ
+    - サーバー証明書、中間証明書
+
+- クライアントで利用できる鍵交換のアルゴリズムを決め、共有パラメータおよび、公開鍵、自身の DHE や ECDHE などの秘密鍵からプリマスターシークレットを生成する
+
+- プリマスターシークレット、サーバーランダム、クライアントランダムなどからマスターシークレットを生成する
+
+- マスターシークレットからセッションキー(共通鍵)、MAC キーを生成する
+
+- TSL HandShake の終了を通知する
+
+<img src="./img/TLS1.3_5.png" />
+
+<br>
+
+3\. Finished (クライアント → サーバー)
+
+- サーバー証明書の検証
+
+- 選択された鍵交換アルゴリズムの共有パラメーター、自身の秘密鍵、サーバー側の公開鍵からプリマスターシークレットを生成する
+
+- プリマスターシークレット、サーバーランダム、クライアントランダムなどからマスターシークレットを生成する
+
+- マスターシークレットからセッションキー(共通鍵)、MAC キーを生成する
+
+- TSL HandShake の終了を通知する
+
+<img src="./img/TLS1.3_6.png" />
+<img src="./img/TLS1.3_7.png" />
+<img src="./img/TLS1.3_8.png" />
+<img src="./img/TLS1.3_9.png" />
