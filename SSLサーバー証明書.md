@@ -252,3 +252,39 @@ SSL 証明書の中身について： [SSL証明書とは？](https://www.cloudf
 - サーバー証明書の種類について2 -> [SSLサーバ証明書の種類と選び方](https://www.site-shokunin.com/blog/other/5255.html)
 
 - サーバー証明書の種類について3 -> [SSLサーバ証明書の選び方（認証別）](https://www.ssl-store.jp/select-approval/)
+
+---
+
+### プライベート証明書とは
+
+イメージ
+- 個人で構築した認証局によって署名された証明書のこと
+
+<br>
+
+利用目的
+- 社内で利用するwebシステムとの通信を暗号化(SSL / TLS)化したい場合、パブリック証明書のように有料の証明を置かずとも無料で作成できるプライベート証明書で SSL/ TLS 化する
+
+- 上記の理由から社内システムに用いられることが多い
+
+<br>
+
+<img src="./img/Private-Certificate_1.png" />
+<img src="./img/Private-Certificate_2.png" />
+<img src="./img/Private-Certificate_3.png" />
+<img src="./img/Private-Certificate_4.png" />
+
+<br>
+
+注意すべき点
+- 社内ユーザーがルート証明書のインストールをする必要がある
+
+<br>
+<br>
+
+参考サイト
+
+- プライベート証明書について1: [電子署名の安全性に欠かせない「プライベート認証局」とは？](https://www.gmosign.com/media/work-style/privateninshokyoku/)
+
+- プライベート証明書について2: [プライベート認証局とは？ 構築方法やパブリック認証局との違いを解説](https://www.netattest.com/private-ca_2022_mkt_fsp)
+
