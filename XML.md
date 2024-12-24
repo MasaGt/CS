@@ -93,7 +93,7 @@
 
 - 名前空間を利用して、各 book を一意に特定する
 
-    - `xmls:prefix="{URI}"` で名前空間を定義する
+    - `xmlns:prefix="{URI}"` で名前空間を定義する
 
         - URI 部分が要素を一意に定めるための識別子
 
@@ -105,8 +105,8 @@
 
     ```xml
     <books
-        xmls:A="http://www.sample.com/book1"
-        xmls:B="http://www.sample.com/book2">
+        xmlns:A="http://www.sample.com/book1"
+        xmlns:B="http://www.sample.com/book2">
 
         <A:book>One Piece vol.1</book>
         <B:book>One Piece vol.2</book>
