@@ -50,7 +50,7 @@
 
             - 名前空間のプレフィックスは `xs` か `xds` が慣例的に使われる
 
-            - ★XML Schema では XML 文章内の全ての要素がルートで定義される名前空間に属する必要がある
+            - ★XML Schema では XML 文章内の全ての[グローバル要素](#ローカル要素とグローバル要素)がルートで定義される名前空間に属する必要がある
     
     <br>
 
@@ -464,3 +464,220 @@ maxOccurs, minOccurs 属性について
 
 all 要素, choice 要素について
 - [XML Schema (3)](https://www.ikueikan.ac.jp/~tomoharu/ws2004/text/index_c5.html)
+
+---
+
+### targetNamespace とは
+
+<img src="./img/XML-Schema-targetNamespace_1.png" />
+
+<br>
+
+- XML Schema ファイルに定義するが、役割としては、その XML Schema に従って書かれた XML に対して、「この名前空間をつかえ」と強制する命令を意味する
+
+<br>
+
+#### xmlns と targetNamespace の違い
+
+
+- xmlns はその (XML Schema, XML 関係なく) ファイルにて使用する名前空間
+
+- targetNamespace はその XML Schema に従って作成される XML ファイル(文書)にて使用しなければいけない名前空間
+
+<br>
+
+#### targetNamespace と schemaLocation 属性
+
+- 疑問: XML 文書をパーサーが解析するとき、その XML 文書の構成が正しいものであるとどうやって判断されるのか?
+
+    ```xml
+    <!-- 以下の XML の構造は正しいのか正しくないのか? 
+    どうやつて判断されるのか? -->
+    <mb:book xmlns:mb="http://www.mybook.jp">
+
+        <mb:title>
+            よくわかるXML
+        </mb:title>
+
+        <mb:author>
+            山田太郎
+        </mb:author>
+
+    </mb:book>
+    ```
+
+<br>
+
+- 答え: XML 文書側で schemaLocation 属性を利用する
+
+    - ★schemaLocation で指定された XML Schema を元に XML 文章の構造がチェックされるかどうかは解析する XML パーサーの実装次第
+
+    <br>
+
+    - schemaLocation の使い方
+        - `schemaLocation`=`{名前空間のURI}` `XML SchemaファイルのURL`
+
+        <br>
+
+        - XML Schema
+
+            ```xsd
+            <!-- XML文書部分のみ -->
+            <xs:schema 
+                xmlns:xs="http://www.w3.org/2001/XMLSchema"
+                targetNamespace="http://www.mybook.jp">
+
+                <xs:element name="book">
+                    <xs:complexType>
+
+                        <xs:element name="title" type="xs:string"/>
+
+                        <xs:element name="author" type="xs:string"/>
+
+                    </xs:complexType>
+                </xs:element>
+            </xs:schema>
+            ```
+
+        <br>
+
+        - 上記 XML Schema に従った XML
+
+            ```xml
+            <!-- XML文書部分のみ -->
+            <mb:book
+                xmlns:mb="http://www.mybook.jp"
+                mb:schemaLocation="http://www.mybook.jp {XML Schema ファイルのURL}"
+            >
+
+                <mb:title>
+                    よくわかるXML
+                </mb:title>
+
+                <mb:author>
+                    山田太郎
+                </mb:author>
+
+            </mb:book>
+            ```
+
+<br>
+
+<img src="./img/XML-Schema-Schema-Location_1.png" />
+
+<img src="./img/XML-Schema-Schema-Location_2.png" />
+
+<br>
+<br>
+
+参考サイト
+[XML Schema 8章　NamespaceとXML Schema](https://www.techscore.com/tech/XML/XML_Schema/Schema8/8_2)
+
+---
+
+### ローカル要素とグローバル要素
+
+<img src="./img/XML-Schema-Local-Global-Elements_1.png" />
+
+<br>
+
+- グローバル要素
+
+    - schema 要素の子要素
+
+<br>
+
+- ローカル要素
+
+    - 主に complexType 要素以下に宣言された子要素
+
+<br>
+
+#### 注意点
+
+- グローバル要素は、その XML Schema で指定された targetNamespace の名前空間に所属する
+
+    - → XML Schema の ref や type 属性で参照する際は、名前空間(prefix)を指定する必要がある
+
+    - → XML 文書でその要素名を書くときは、名前空間(prefix)を指定しなければならない
+
+    <br>
+
+    <img src="./img/XML-Schema-Global_1.png"/>
+
+<br>
+
+- ローカル要素は、その XML Schema で指定された targetNamespace の名前空間には所属しない
+
+    - → XML 文書(ファイル)でその要素名を書くときは、名前空間を指定してはいけない
+
+    <br>
+    
+    <img src="./img/XML-Schema-Local_1.png" />
+
+<br>
+<br>
+
+参考サイト
+
+[最終回　XML Schema―型の再利用と名前空間](https://atmarkit.itmedia.co.jp/fxml/rensai2/xmlmaster15/master15.html)
+
+[9.2 XML 文書内のNamespace指定](https://www.techscore.com/tech/XML/XML_Schema/Schema9/9_2)
+
+[XML Schema (2)](https://www.ikueikan.ac.jp/~tomoharu/ws2004/text/index_c4.html#doc5_531)
+
+---
+
+### XML Schema 側にて taregtNamespace の名前空間を参照するケース
+
+<img src="./img/XML-Schema-Name-Space_1.png">
+
+<br>
+
+上記 XML Schema に従って記述される XML 文書の例
+
+```xml
+<!-- XML文章分のみ -->
+<ts:book xmlns:ts="http://www.test.jp" >
+    <!-- title要素は XML Schema にてグローバル要素で定義されているので名前空間を指定する必要がある -->
+    <ts:title>
+        よくわかるXML
+    </ts:title>
+</ts:book>
+```
+
+#### ポイント
+
+- XML Schema 側
+    - ref や type 属性で XML Schema 内の他の要素を参照する場合、その XML Schema で宣言したtargetNamespace の名前空間を指定する必要がある
+
+- XML 文書(ファイル)側
+
+    - 記述する要素がグローバル要素かローカル要素によって、要素名に名前空間を付けなければいけない/付けてはいけない
+        
+        - 詳しくは[こちら](#ローカル要素とグローバル要素)を参照
+
+<br>
+<br>
+
+参考サイト
+
+[最終回　XML Schema―型の再利用と名前空間](https://atmarkit.itmedia.co.jp/fxml/rensai2/xmlmaster15/master15.html)
+
+[対象名前空間](https://art-tags.net/xml/schema/step38.html) ★ブラウザのエンコーディングを Shift-JIS にしないと文字化けが起きる
+
+---
+
+### 名前空間を指定しない XML Schema を参照するケース
+
+- XML Schema にて targetNamespace が指定されていないものをカメレオンスキーマと呼ぶ
+
+---
+
+### elementFormDefault 属性
+
+---
+
+### ref 属性を利用する際の注意点
+
+- グローバル要素の element には ref 属性は使えない
