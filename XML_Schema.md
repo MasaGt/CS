@@ -589,6 +589,8 @@ all 要素, choice 要素について
 
 - ローカル要素
 
+    - schema 要素の子要素　(直下で定義されている)　ではない要素
+
     - 主に complexType 要素以下に宣言された子要素
 
 <br>
@@ -597,7 +599,7 @@ all 要素, choice 要素について
 
 - グローバル要素は、その XML Schema で指定された targetNamespace の名前空間に所属する
 
-    - → XML Schema の ref や type 属性で参照する際は、名前空間(prefix)を指定する必要がある
+    - → XML Schema の ref や type 属性で参照する際は、名前空間(prefix)を指定しなけれならない
 
     - → XML 文書でその要素名を書くときは、名前空間(prefix)を指定しなければならない
 
@@ -672,12 +674,96 @@ all 要素, choice 要素について
 
 - XML Schema にて targetNamespace が指定されていないものをカメレオンスキーマと呼ぶ
 
+- XML でカメレオンスキーマな XML Schema を参照したい場合は `noNamespaceSchemaLocation` 属性で参照する
+
+    - 参照方法は[schemaLocation属性](#targetnamespace-と-schemalocation-属性)と似た記法 (名前空間のURIが無く、XML Schema ファイルの URL だけを指定する)
+
+<br>
+
+<img src="./img/XML-Schema-No-Name-Space-Location_1.png" />
+
+<br>
+<br>
+
+参考サイト
+
+[8.4 schemaLocation、noNamespaceSchemaLocation](https://www.techscore.com/tech/XML/XML_Schema/Schema8/8_4)
+
 ---
 
-### elementFormDefault 属性
+### form 属性と elementFormDefault 属性
+
+- 通常 XML Schema では、ローカル要素は targetNamespace で宣言された名前空間に所属しない
+
+    - 以下のうちどれか1つの方法でローカル要素も名前空間での修飾を強制させることができる (どちらともXML Schema 側で指定する)
+
+        1. 対象の ローカル要素の form 属性 の値に "qualified" を指定する
+
+            <img src="./img/XML-Schema-Form-Attribute_1.png" />
+
+        <br>
+
+        2. schema 要素の elementFormDefault 属性の値に "qualified" を指定する
+
+            <img src="./img/XML-Schema-Element-Form-Default-Attribute_1.png" />
+
+<br>
+
+#### form 属性と elementFormDefault 属性の違い
+
+- form 属性
+
+    - 対象のローカル要素のみに名前空間での修飾の強制力が働く
+
+    - 宣言する場所は、対象となるローカル要素
+
+<br>
+
+- elementFormDefault 属性
+
+    - 全てのローカル要素に名前空間での修飾の強制力が働く
+
+    - 宣言する場所は schema 要素
 
 ---
 
 ### ref 属性を利用する際の注意点
 
-- グローバル要素の element には ref 属性は使えない
+- グローバル要素には ref 属性は使えない
+
+    <img src="./img/XML-Schema-Ref-Attribute_1.png" />
+
+<br>
+
+- グローバル要素で ref みたいに他の要素を参照したい場合は type 属性で参照することができる
+
+    <img src="./img/XML-Schema-Ref-Attribute_2.png" />
+
+---
+
+### グローバル属性に注意
+
+- グローバルレベルで宣言された attribute 要素は targetNamespace で指定された名前空間に所属する
+
+    <img src="./img/XML-Schema-Global-Attribute_1.png" />
+
+<br>
+
+- ローカルレベルで宣言された attribute 要素は targetNamespace で指定された名前空間に所属しない
+
+    <img src="./img/XML-Schema-Local-Attribute_1.png" />
+
+<br>
+<br>
+
+参考サイト
+
+[XML Schema: やるべきこと、やってはいけないこと](https://www.horobi.com/xml/XMLSchemaDosAndDONTs.ja.html#avoid_chameleon)
+
+---
+
+### その他
+
+- XML が XML Schema に従って記述されているかを検証してくれる Web ツール
+
+    - [Free Online XML Validator (XSD)](https://www.liquid-technologies.com/online-xsd-validator)
