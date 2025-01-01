@@ -137,17 +137,13 @@
 
     - use 属性
 
-        - "literal": XMLの構造がそのままメッセージとして使用され SOAP メッセージ本体がk見立てられる
+        - 詳しくは[エンコーディングの意味](#ここでのエンコーディングの意味とは)を参照
 
-        - "encoded": SOAPメッセージのボディ部分がエンコードされる 
+    - encodingStyle 属性
 
-            - ≠ メッセージがバイナリデータなどのエンコーディングされるわけではなく、
+        - use 属性 encoded を指定した場合に指定する
 
-    - encodingStyle 属性: SOAP メッセージの
-
-        - "http[]()://schemas.xmlsoap.org/soap/encoding/": SOAP 1.1で使用されるデフォルトのエンコーディングスタイル
-        
-        TODO: array要素が encoded でどう変わるかチェック
+        - 詳しくは[こちら](#エンコーディングの種類)を参照
 
 <br>
 
@@ -211,7 +207,16 @@ wsdl:port 要素について
 
 - SOAP の仕様では以下の2種類のメッセージ形式というものがある
 
-- ★★ SOAP メッセージの body の形式(構造)に影響する
+    1. [RPC](#rpc-remote-protocol-call)
+    2. [Document](#document)
+
+- ★★ メッセージ形式は SOAP メッセージの body の形式(構造)に影響する
+
+    - 同じ内容のメッセージでもメッセージ形式 (スタイル) によって、構成されるメッセージの構造が異なる
+
+    <img src="./img/WSDL-Style_1.gif" />
+
+    引用: [Document, RPC, Literal, Encoded](https://flylib.com/books/en/2.87.1.32/1/)
 
 <br>
 
@@ -227,13 +232,37 @@ wsdl:port 要素について
 
 <br>
 
-- SOAP メッセージの RPC 形式とは
+##### RPC 形式での　SOAP メッセージ (body部分) の構造
+
+- SOAP では RPC を記述する約束事として、body 直下の要素名は RPC で呼び出すメソッド名と同じにすること、またパラメータ名もその子要素名と同じにすることが決まっている
+
+<img src="./img/WSDL-RPC_2.png">
+
+引用: [Webサービスのキホン（3）SOAPヘッダの役割とSOAP-RPCの実現](https://atmarkit.itmedia.co.jp/ait/articles/0301/17/news004.html)
 
 <br>
 
 #### Document
 
-- SOAP メッセージの Document 形式とは
+-  任意の書式と内容を持つ XML を SOAP メッセージに封入してやり取りを行う方法 
+
+    - → RPC のように送りたいメッセージの形式を制約に従って整形する必要はない
+
+    <br>
+
+    <img src="./img/WSDL_Document_1.gif" />
+
+    引用: [吉松史彰のWebサービス論【第2回】(3)](https://xtech.nikkei.com/it/members/NBY/techsquare/20050713/164546/)
+
+<br>
+
+- 現在は Document 形式の方が主流
+
+<br>
+
+##### Document 形式での SOAP メッセージ (body部分) の構造
+
+- 送りたいメッセージの XML をそのまま body 直下に書く
 
 <br>
 <br>
@@ -241,3 +270,82 @@ wsdl:port 要素について
 参考サイト
 
 [1.2. プログラミング・開発ガイド](https://docs.nec.co.jp/sites/default/files/webotx_manual_v85/WebOTX/85/html/dev_devstudio_javaee/1.2_wsdk_programming.html)
+
+[Document, RPC, Literal, Encoded](https://flylib.com/books/en/2.87.1.32/1/)
+
+RPC 形式の SOAPメッセージについて
+- [Webサービスのキホン（3）SOAPヘッダの役割とSOAP-RPCの実現](https://atmarkit.itmedia.co.jp/ait/articles/0301/17/news004.html)
+
+---
+
+### WSDL のメッセージ形式とエンコーディングの組み合わせ
+
+#### ここでのエンコーディングの意味とは
+
+- 符号化、シリアライズとも呼ばれる
+
+- SOAP におけるエンコーディング (符号化) とは**送信するデータを XML として構築する手法のこと**を指す
+
+    - ★送信するデータをバイナリに変換したり、文字エンコーディングするという意味ではないので注意
+
+    - データはオブジェクト、数値、配列、文字列などから成り、1種のエンコーディング手法として、それらを XML として記述する際にデータ型も一緒に記述するものがある
+
+<br>
+
+#### エンコーディングの種類
+
+- WSDL ファイルの soap:body 要素の use 属性で SOAP メッセージの body 部分をエンコーディング手法を指定する
+
+    - literal
+
+        - データをそのまま XML に記述する (データ型の記述は無い)
+            - 個々の要素にデータ型の定義を併記しない
+
+        - こちらが主流 かつ Document形式 と組み合わせられることが多い
+
+    <br>
+
+    - encoded
+
+        - 個々のデータにデータ型を併記する
+
+        - 同じ soap:body 要素の encodingStyle 属性 に指定されるSOAPのエンコーディング規則に従って符号化される
+
+            - SOAP1.1のエンコーディング規則を利用する場合は encodingStyle="http[]()://schemas.xmlsoap.org/soap/encoding/" を指定すること
+
+<br>
+
+#### 一般的なメッセージ形式とエンコーディングの組み合わせ
+
+- 以下の組み合わせが一般的
+
+    - RPC / ENCODED
+
+    - DOCUMENT / LITERAL
+
+<br>
+
+- 主流なのは DOCUMENT / LITERAL
+
+<br>
+
+<img src="./img/WSDL-Style-Use_1.png" />
+
+引用: [Cosminexus　SOAPアプリケーション開発ガイド 3.3.3　生成されるWSDLの例](https://itpfdoc.hitachi.co.jp/manuals/3020/30203m4760/EM470034.HTM)
+
+<br>
+<br>
+
+参考サイト
+
+WSDLスタイルとエンコーディングスタイルについて
+- [SOAP起動のフロー](https://help.asteria.com/documentation/warp/ja/4.5/flow/designer/flowservice/flowtype_soap.html)
+
+エンコーディングの意味について
+- [SOAPにおけるスタイルとエンコーディング](https://www.oracle.com/technetwork/jp/articles/index-093558-ja.html#soap)
+- [SophiaFramework UNIVERSE 5.3](http://s-cradle.com/developer/sophiaframework/sf_reference/ref.SFXSOAPWriter.html)
+- [SOAPの仕掛け（1）SOAPの仕掛けはどうなっている？](https://atmarkit.itmedia.co.jp/ait/articles/0103/02/news004_2.html)
+
+use 属性の literal と encoded について
+- ★わかりやすい! [SOAP(Simple Object Access Protocol)](http://xmlconsortium.org/websv/kaisetsu/C1/main.html)
+- [1.2. プログラミング・開発ガイド](https://docs.nec.co.jp/sites/default/files/webotx_manual_v85/WebOTX/85/html/dev_devstudio_javaee/1.2_wsdk_programming.html)
