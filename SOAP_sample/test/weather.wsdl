@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+  <definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+    <message name="MyFunctionRequest">
+      <part name="name" type="xsd:string"/>
+    </message>
+    <message name="MyFunctionResponse">
+    </message>
+    <portType name="MyFunctionPortType">
+      <operation name="MyFunction">
+        <input message="tns:MyFunctionRequest"/>
+        <output message="tns:MyFunctionResponse"/>
+      </operation>
+    </portType>
+    <binding name="MyFunctionBinding" type="tns:MyFunctionPortType">
+      <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+      <operation name="MyFunction">
+        <soap:operation soapAction="http://localhost:8000/MyFunction/"/>
+        <input name="tns:MyFunctionRequest">
+          <soap:body namespace="http://localhost:8000/MyFunction/" use="literal"/>
+        </input>
+        <output name="tns:MyFunctionResponse">
+          <soap:body use="literal"/>
+        </output>
+      </operation>
+    </binding>
+    <service name="MyService">
+      <port binding="tns:MyFunctionBinding" name="MyFunctionPort">
+        <soap:address location="http://localhost:8000/MyFunction/" />
+      </port>
+    </service>
+  </definitions>
