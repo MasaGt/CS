@@ -98,7 +98,87 @@
 
 ### JWTの利用の流れ
 
+<img src="./img/JWT_2.png" />
 
+引用: [JWT(Json Web Token)を利用したWebAPIでのCredentialの受け渡しについて](https://blog.mitsuruog.info/2014/08/jwtjson-web-tokenwebapicredential#3実現するためのコア技術jwtjson-web-tokenとは)
+
+<br>
+
+<img src="./img/JWT_3.png" />
+
+引用: [JWTとは？トークンベースの認証の仕様とJWTのメリット、デメリット](https://www.okta.com/jp/identity-101/what-is-token-based-authentication/)
+
+<br>
+
+#### ポイント
+
+- 共通鍵方式か公開鍵方式によって、 JWT の発行もとが認証サーバーだったり、アプリケーション自身だったりするするらしい
+
+    - 詳しくは[こちら](https://qiita.com/asagohan2301/items/cef8bcb969fef9064a5c#5-jwt認証の流れ)を参照
+
+<br>
+
+- JWT (Header, Payload, Signature) のハッシュ化は JWT の発行もとで行う。クライアントは受け取ったハッシュ化済みの JWT をバックエンドアプリケーションに渡すだけ
+
+    - 勘違いしてた所: クライアント側でも JWT の内容を変えてハッシュ化してバックエンドに送信することがあるかも → なりすましとかのケースでない限りそんなケースない(多分)
+
+<br>
+
+1. クライアントが認証情報をバックエンド (認可サーバーが別途設けられてたりする) に送信する
+
+2. バックエンドがユーザーを認証したら JWT を発行する
+
+3. 以降はクライアントは発行された JWT をリクエストに含めてバックエンド (アプリケーション) にアクセスする
+
+<br>
+
+#### JWT の検証
+
+<img src="./img/JWT-Validation_1.png" />
+
+引用: [基本から理解するJWTとJWT認証の仕組み](https://developer.mamezou-tech.com/blogs/2022/12/08/jwt-auth/)
+
+<br>
+
+1. クライアントはリクエストのたびに、JWT をそのまま付けてバックエンドにアクセスする
+
+2. バックエンド側で送られてきた JWT の検証を行う
+
+    - Signature 部をデコードし、さらにバックエンド側が持つ鍵で複合化
+
+    - 復号化された Siganture 部 (= 「BASE64URL でエンコードされた Header 部」 + 「.」 + 「BASE64URL でエンコードされたPayload部」) が送られてきた JWT の Header 部と Payload 部と一致するか検証
+
+<br>
+<br>
+
+参考サイト
+
+[ラボ:JWT入門](https://developer.auth0.com/resources/labs/tools/ja-jwt-basics#付録-json-web-token-jwt-の利用例)
+
+[JWT認証の流れを理解する](https://qiita.com/asagohan2301/items/cef8bcb969fef9064a5c#5-jwt認証の流れ)
+
+[JWT(Json Web Token)を利用したWebAPIでのCredentialの受け渡しについて](https://blog.mitsuruog.info/2014/08/jwtjson-web-tokenwebapicredential)
+
+---
+
+### JWT を利用する際の注意点
+
+- ユーザーのログインパスワードなどの重要な情報を JWT に含めてはいけない
+
+    - JWT の Header 部と Payload 部は BASE64URL エンコードしただけなので、デコードすれば誰でも中身を見ることができる
+
+- 1度発行した JWT は有効期限が切れるまでは無効化できない
+
+<br>
+<br>
+
+参考サイト
+
+[JWT認証の流れを理解する](https://qiita.com/asagohan2301/items/cef8bcb969fef9064a5c#ペイロード)
+
+[JWTとは](https://qiita.com/keitean/items/a2d8f365b6541d26ed05#jwtのデメリット)
+
+[JWTとは？ わかりやすく10分で解説](https://www.netattest.com/jwt-2023_mkt_tst)
 
 ---
 
@@ -145,3 +225,41 @@
 [BASE64、URLエンコード、HTMLエスケープとは・・](https://www.omakase.net/blog/2022/06/base64urlhtml.html)
 
 [Base64とは？エンコードの方法などをわかりやすく解説！](https://it-infomation.com/base64/)
+
+---
+
+### JWT とセッション
+
+#### JWT
+
+- トークンはクライアント側で保存される
+
+    - サーバー側で保存するストレージを用意しなくていい
+
+<br>
+
+- 1度発行されたトークンは有効期限がくるまで無効化できない
+
+- 
+
+<br>
+
+
+#### セッション
+
+- ユーザ情報とセッションIDを対応させた情報をサーバー側が持っておく必要がある
+
+    - サーバー側でストレージを用意する必要がある
+
+    - ユーザーが増えると、それに応じてストレージも多く確保する必要がある
+
+<br>
+
+- サーバー側で特定のセッション ID を無効化することができる
+
+<br>
+<br>
+
+参考サイト
+
+[JWTトークンによる認証とセッショントークンによる認証の違い](https://seiseiengineering.com/jwtトークンによる認証とセッショントークンによ/)
