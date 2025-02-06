@@ -110,6 +110,8 @@
 
 [digコマンドの「status」と「fags」](https://qiita.com/harukin721/items/294d18ec74a36a322a2a)
 
+[2022年度新卒技術研修「DNS」講義](https://speakerdeck.com/excitejp/2022nian-du-xin-zu-ji-shu-yan-xiu-dns-jiang-yi?slide=53)
+
 ---
 
 ### +trace オプション
