@@ -49,11 +49,11 @@
 
 - operation 要素を子要素に持ち、各 operation 要素は input, output, fault 要素を持つ
 
-    - input:　Webサービスがクライアントから受け取る入力メッセージを記述する
+    - input: Web サービスがクライアントから受け取る入力メッセージを記述する
 
-    - output:　Webサービスがクライアントへ送信する出力メッセージを記述する
+    - output: Web サービスがクライアントへ送信する出力メッセージを記述する
 
-    - fault: オプション。Webサービスでエラーが発生したときにエラー情報をクライアントへ送信するフォルトメッセージを記述する
+    - fault: オプション。Weサービスでエラーが発生したときにエラー情報をクライアントへ送信するフォルトメッセージを記述する
 
 <br>
 
@@ -163,7 +163,6 @@ soap:bodu use 属性について
 soap:body encodingStyle 属性について
 - [SOAP Envelope 要素](https://memopad.bitter.jp/w3c/soap/soap_envelope.html)
 
-
 ---
 
 ### service
@@ -180,7 +179,7 @@ soap:body encodingStyle 属性について
 
 - wsdl:port 要素
 
-    - Webサービスを利用するための出入り口のことをWSDLではポートと呼ぶ
+    - Webサービスを利用するための出入り口のことを WSDL ではポートと呼ぶ
 
     - name、 binding 属性はどちらとも必須
 
@@ -309,9 +308,9 @@ RPC 形式の SOAPメッセージについて
 
         - 個々のデータにデータ型を併記する
 
-        - 同じ soap:body 要素の encodingStyle 属性 に指定されるSOAPのエンコーディング規則に従って符号化される
+        - 同じ soap:body 要素の encodingStyle 属性 に指定される SOAP のエンコーディング規則に従って符号化される
 
-            - SOAP1.1のエンコーディング規則を利用する場合は encodingStyle="http[]()://schemas.xmlsoap.org/soap/encoding/" を指定すること
+            - SOAP1.1 のエンコーディング規則を利用する場合は encodingStyle="http[]()://schemas.xmlsoap.org/soap/encoding/" を指定すること
 
 <br>
 
