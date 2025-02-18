@@ -20,8 +20,6 @@
 
 - 送信と受信を同時に行うことができるフルデュプレックス (Full Duplex) な通信を提供
 
-- 
-
 <br>
 
 #### ざっくりとした仕組み
@@ -34,7 +32,7 @@
 
 - ★最初のコネクションの確立には HTTP を使う
 
-- HTTPコネクションが確立されると、以降の通信に WebSocket を利用する
+- HTTP コネクションが確立されると、以降の通信に WebSocket を利用する
 
 - データはフレームという単位でやり取りされる
 
@@ -71,6 +69,8 @@
 
     - ★ステートレス
 
+        - 各リクエストとレスポンスがそれぞれ独立しており、過去のリクエストやレスポンスの状態を記憶しない
+
 <br>
 
 - WebSocket
@@ -80,6 +80,8 @@
     - ヘッダーのデータサイズが HTTP のものと比べると小さいらしい
 
     - ★ステートフル
+
+        - 一度コネクションが確立すると、そのコネクションがとじられるまでは過去のリクエストやレスポンスの状態を参照できる (たぶん)
     
 <br>
 <br>
@@ -91,3 +93,5 @@
 [今さら聞けないWebSocket~WebSocketとは~](https://qiita.com/chihiro/items/9d280704c6eff8603389)
 
 [WebSocket と REST API](https://lab.wallarm.com/what/websocket-と-rest-api/?lang=ja)
+
+[ステートレスとステートフルのプロトコルであるHTTPとWebSocketを比べてみよう](https://teteteo619.com/blog/http_and_websocket)
