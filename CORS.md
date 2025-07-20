@@ -177,6 +177,8 @@
 
     引用: [CORSを絶対に理解する](https://zenn.dev/syo_yamamoto/articles/445ce152f05b02#資格情報を含むリクエストについて)
 
+<br>
+
 - クロスオリジンなサーバー側でレスポンスの `Access-Control-Allow-Credentials` ヘッダーを true として返すよう設定する必要がある
 
 <br>
