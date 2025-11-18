@@ -81,6 +81,8 @@
 
 [【今話題！】GraphQLとは？RESTとの違いやできること、仕組みを詳しく解説！](https://jitera.com/ja/insights/39795)
 
+[GraphQLとRESTの比較](https://hasura.io/learn/ja/graphql/intro-graphql/graphql-vs-rest/)
+
 [GraphQLのエラーハンドリングが分かりづらすぎるので整理する](https://zenn.dev/minamiso/articles/994e56830e42e1)
 
 ---
@@ -89,38 +91,80 @@
 
 - **[スキーマ](#スキーマ)**
 
-- #### クエリ
+<br>
+
+#### クエリ
+
+- 文脈によって複数の意味を持つ
+
+    1. データを読み取るためのリクエストとしてのクエリ (クライアントが送る実行操作としてのクエリ)
+    
+        - GraphQL のクエリとは**完全に読み取り専用で副作用 (データ変更) を起こさない**読み取り操作
+
+        - REST API でいう GET
+    
+    <br>
+
+    2. スキーマに定義する*読み取り用のエンドポイントの集合*としての[クエリ](#クエリ型-query) (GraphQL サーバーで定義するクエリ)
 
 <br>
 
 #### ミューテーション
 
+- 文脈によって複数の意味を持つ
+
+    1. データを作成、更新、削除するためのリクエストとしてのミューテーション (クライアントが送る実行操作としてのミューテーション)
+
+        - REST API でいう POST, PUT, DELETE
+    
+    <br>
+
+    2. スキーマに定義する*データ操作 (作成、更新、削除) 用のエンドポイントの集合*としての[ミューテーション](#ミューテーション型-mutation) (GraphQL サーバーで定義するミューテーション)
+
 <br>
 
 #### サブスクリプション
 
+- 文脈によって複数の意味を持つ
+
+    1. GraphQL サーバーがクライアントにリアルタイムでデータをプッシュする仕組み
+
+        <img src="./img/GraphQL-Subscription_1.svg" />
+
+        <br>
+
+        - ★最初にクライアント側から WebSocket を開き、対象のサブスクリプションをリクストして登録する必要がある
+
+        - ★サブスクリプションの持続的な接続は、通常 [WebSocket](./WebSocket.md) を使用して確立される
+
+        - Query / Mutation は都度リクエスト → Response だが、Subscription は 常時接続＋サーバーからのプッシュ
+
+    <br>
+
+    2. スキーマに定義する*プッシュ通知操作用のエンドポイントの集合*としての[サブスクリプション](#サブスクリプション型-subscription) (GraphQL サーバーで定義するサブスクリプション)
+
 <br>
 
-#### リゾルバ
+#### リゾルバー
+
+- スキーマ定義で定義したクエリ、ミューテーション、サブスクリプションの実装
+
+    <img src="./img/GraphQL-Resolver_1.png" />
+
+    <img src="./img/GraphQL-Resolver_2.svg" />
 
 <br>
 <br>
 
 参考サイト
 
-このセクション全般に関する記事
-- [エンジニア初学者におすすめ GraphQLの基礎と簡単なクエリ例](https://envader.plus/article/419)
-- [GraphQL入門：基本概念とクエリの書き方を一通り体験しよう](https://zenn.dev/dotdtech_blog/articles/994a7e82f98fb8#リゾルバ定義)
+[エンジニア初学者におすすめ GraphQLの基礎と簡単なクエリ例](https://envader.plus/article/419)
 
-<br>
+[GraphQL入門：基本概念とクエリの書き方を一通り体験しよう](https://zenn.dev/dotdtech_blog/articles/994a7e82f98fb8#リゾルバ定義)
 
-クエリ、ミューテーション、サブスクリプションについて
-- []()
+[ApolloでgraphQLのsubscriptionを実装したはなし](https://zenn.dev/meii/articles/a3710fc09104b6)
 
-<br>
-
-リゾルバーについて
-- []()
+[GraphQLのリゾルバ（Resolver）とは](https://qiita.com/NagaokaKenichi/items/86272f2f654070b06488)
 
 ---
 
@@ -299,19 +343,76 @@
 
     - #### クエリ型 (Query)
 
+        <img src="./img/GraphQL-Schema-Query-Type_1.svg" />
+
+        <br>
+
+        - GraphQL におけるエンドポイント定義 (**データ取得用**)
+
+            - ここでの「エンドポイント」とは REST API でのエンドポイント (URL) とは異なり、当GraphQL API が提供するデータ取得用操作の入り口のイメージ
+
+                <img src="./img/GraphQL-Schema-Query-Endpoint_1.svg" />
+
+        <br>
+
+        - `type`　キーワードで宣言する
+
+        <br>
+
         - プログラムで言うメソッドに近い
+
+        <br>
+        
+        - ★引数なしの操作は定義可能だが、戻り値なしの操作は定義できない
+
+            <img src="./img/GraphQL-Schema-Query-Mutation-Type-Constraint_1.svg" />
 
     <br>
 
     - #### ミューテーション型 (Mutation)
 
+        <img src="./img/GraphQL-Schema-Mutation-Type_1.svg" />
+
+        <br>
+
+        - GraphQL におけるエンドポイント定義 (**データ作成、更新、削除用**)
+
+            - [Query](#クエリ型-query) と書き方は一緒
+
+        <br>
+
+        - `type` キーワードで宣言する
+
+        <br>
+
         - プログラムで言うメソッドに近い
 
+        <br>
+
+        - ★引数なしの操作は定義可能だが、戻り値なしの操作は定義できない
+
+            <img src="./img/GraphQL-Schema-Query-Mutation-Type-Constraint_1.svg" />
     <br>
 
     - #### サブスクリプション型 (Subscription)
 
-        - プログラムで言うメソッドに近い
+        <img src="./img/GraphQL-Schema-Subscription-Type_1.svg" />
+
+        <img src="./img/GraphQL-Schema-Subscription-Type_2.svg" />
+
+        <br>
+
+        - GraphQL サーバー側からクライアントへのプッシュ通知操作エンドポイント定義
+
+            - [Query](#クエリ型-query) と書き方は一緒
+
+        <br>
+
+        - `type` キーワードで宣言する
+
+        <br>
+
+        - [Query](#クエリ型-query)、[Mutation](#ミューテーション型-mutation) と同様に引数なしの操作は定義可能だが、戻り値なしの操作は定義できない
 
 <br>
 
@@ -321,18 +422,82 @@
 
 - ★オブジェクト名やそのフィールド名、クエリ(ミューテーション、サブスクリプション)名などはスペースを含んではいけない
 
+    <img src="./img/GraphQL-Schema-Field-Constraint_1.svg" />
+
+<br>
+
+- フィールドのデータ型を `[]` でくくると、そのフィールドは配列であることを表す
+
+- ★フィールドのデータ型 `!` をつけると、そのフィールドが Non-Null (Null になることがない) を表す
+
+    - リスト (`[]`) と `!` の組み合わせはいくつかあり、それぞれ意味合いが違うので注意
+
+        <img src="./img/GraphQL-List_1.png" />
+
+        引用: [GraphQLのスキーマと型定義](https://qiita.com/NagaokaKenichi/items/d341dc092012e05d6606#リスト)
+
 <br>
 <br>
 
 参考サイト
 
+[GraphQL - Schemas and Types](https://graphql.org/learn/schema/?utm_source=chatgpt.com)
+
+[スキーマ定義から見たgraphql](https://zenn.dev/urotea/books/ece9493100b5be/viewer/53920c#特殊なプリミティブ型id)
+
 [GraphQLスキーマ完全ガイド | 理解して再利用できるスキーマ解説](https://blog.querier.io/posts/detail/4z6k00um7ivp/)
 
+[GraphQLに入門する](https://qiita.com/jintz/items/c9105dca1725224d36a8)
+
+[GraphQLのスキーマと型定義](https://qiita.com/NagaokaKenichi/items/d341dc092012e05d6606#リストのエクスクラメーションマークマーク)
+
 ---
 
-### クエリ
+### スキーマ定義中の scehma キーワード
+
+- ★`schema` キーワードで宣言する
 
 ---
+
+### カスタムスカラー型
+
+- 独自のスカラー型を作ることができる機能
+
+    - ★★カスタムスカラーはあくまでもスカラー型の1種なので、**1つの値しか持てない**
+
+- `scalar` キーワードで宣言する
+
+    - ★スキーマでは自作の型名だけを宣言する = フィールドの定義はしない 
+
+    - 実際にその独自のデータ型の具体定内容はリゾルバーで記述する必要がある
+
+
+---
+
+### クエリの送信
+
+<img src="./img/GraphQL-How-To-Send-Query_1.svg" />
+
+<br>
+
+- GET で送信する場合はクエリパラメータに含める
+
+<br>
+
+- POST で送信する場合は Body の `query` にクエリを `variables` に変数を含めて送信するらしい
+
+    - ★基本的に POST が使用される
+
+<br>
+
+- ★そもそも、ライブラリを使うことで「どのメソッドで送るのか」や「どこにクエリを含めるのか」を意識しなくてもいいようになっている
+
+<br>
+<br>
+
+参考サイト
+
+[GraphQLに入門する](https://qiita.com/jintz/items/c9105dca1725224d36a8)
 
 ---
 
@@ -354,7 +519,3 @@
     
     同じURLなので、2回目のリクエストはサーバーに問い合わせずにキャッシュに保存したデータを返そうとなる
     ```
-
----
-
-### スカラー型 ID とは
