@@ -339,6 +339,18 @@
 
         - ★`input` キーワードで宣言する
 
+        <br>
+
+        - ★★Input Object のフィールドに定義できるのは スカラー型、Enum 型、他の Input Object 型
+
+             TODO: 画像を作成
+
+        <br>
+
+        - Input Object は [Query](#クエリ型-query)、[Mutation](#ミューテーション型-mutation)、[Subscription](#サブスクリプション型-subscription) の戻り値の型として指定することはできない
+
+            TODO: 画像を作成
+
     <br>
 
     - #### クエリ型 (Query)
@@ -367,6 +379,12 @@
 
             <img src="./img/GraphQL-Schema-Query-Mutation-Type-Constraint_1.svg" />
 
+        <br>
+
+        - ★引数の型に Object 型は指定できない
+
+        - 戻り値の型にはスカラー型、Enum 型、Object 型を指定することができる
+
     <br>
 
     - #### ミューテーション型 (Mutation)
@@ -392,6 +410,11 @@
         - ★引数なしの操作は定義可能だが、戻り値なしの操作は定義できない
 
             <img src="./img/GraphQL-Schema-Query-Mutation-Type-Constraint_1.svg" />
+
+        <br>
+
+        - ★引数の型に Object 型は指定できない
+
     <br>
 
     - #### サブスクリプション型 (Subscription)
@@ -413,6 +436,8 @@
         <br>
 
         - [Query](#クエリ型-query)、[Mutation](#ミューテーション型-mutation) と同様に引数なしの操作は定義可能だが、戻り値なしの操作は定義できない
+
+            - - ★引数の型に Object 型も指定できない
 
 <br>
 
@@ -455,7 +480,55 @@
 
 ### スキーマ定義中の scehma キーワード
 
+<img src="./img/GraphQL-Schema-Keyword_1.png" />
+
+<br>
+
+<img src="./img/GraphQL-Schema-Keyword_2.svg" />
+
+<br>
+
+- ★★★スキーマ中の[ルート操作型（Root Operation Types)](#ルート操作型root-operation-types) を定義できるキーワード
+
+    - 各オペレーションに対して指定したオブジェクト型をそのルート型にマッピングするキーワード
+
+    - [Query](#クエリ型-query)、[Mutation](#ミューテーション型-mutation)、[Subsceiprion](#サブスクリプション型-subscription) も**普通のオブジェクト型**であり、デフォルトで各オペレーションのルート型にマッピングされているから特別な型
+
+        <img src="./img/GraphQL-Schema-Keyword_3.svg" />
+
+<br>
+
 - ★`schema` キーワードで宣言する
+
+<br>
+
+#### ルート操作型（Root Operation Types）
+
+<img src="./img/GraphQL-Root-Operation-Types_1.svg" />
+
+<br>
+
+- ルート型とはスキーマ定義するオペレーション([Query](#クエリ型-query), [Mutation](#ミューテーション型-mutation), [Subscription](#サブスクリプション型-subscription))のエントリーポイント (=名前空間) を表現する型
+
+    - デフォルト (=schema キーワードでの定義がない) の場合
+
+        - クエリオペレーションのルート型は Query オブジェクト (実態は[Object](#オブジェクト型-object))
+
+        - ミューテーションオペレーションのルート型は Mutation オブジェクト (実態は[Object](#オブジェクト型-object))
+
+        - サブスクリプションオペレーションのルート型は Subscription オブジェクト (実態は[Object](#オブジェクト型-object))
+
+<br>
+<br>
+
+参考サイト
+
+[GraphQL - Root Operation Types](https://spec.graphql.org/draft/#sec-Root-Operation-Types)
+
+[GraphQLのスキーマと型を学び直した - ルート型](https://qiita.com/inetcpl/items/30ad038d20968199ee5e#ルート型)
+
+[GraphQLのスキーマと型定義 - ルート型](https://qiita.com/NagaokaKenichi/items/d341dc092012e05d6606#ルート型)
+
 
 ---
 
@@ -467,10 +540,18 @@
 
 - `scalar` キーワードで宣言する
 
-    - ★スキーマでは自作の型名だけを宣言する = フィールドの定義はしない 
+    - ★スキーマでは自作の型名だけを宣言する
 
     - 実際にその独自のデータ型の具体定内容はリゾルバーで記述する必要がある
 
+        - TODO 画像を追記
+
+<br>
+<br>
+
+参考サイト
+
+[GraphQL Scalars便利だなぁ🚀](https://zenn.dev/yun8boo/articles/a8a9088db88d98)
 
 ---
 
@@ -519,3 +600,30 @@
     
     同じURLなので、2回目のリクエストはサーバーに問い合わせずにキャッシュに保存したデータを返そうとなる
     ```
+
+---
+
+### 開発手法
+
+- #### スキーマファースト
+
+    - TODO: 説明を追記
+
+<br>
+
+- #### コードファースト
+
+    - TODO: 説明を追記
+
+<br>
+<br>
+
+参考サイト
+
+[GraphQLをわかりやすく解説：基本概念と具体例](https://www.issoh.co.jp/tech/details/2924/#i-3)
+
+---
+
+### Resolver chains
+
+- TODO: リゾルバチェーンについて追記
