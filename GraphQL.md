@@ -147,11 +147,23 @@
 
 #### リゾルバー
 
-- スキーマ定義で定義したクエリ、ミューテーション、サブスクリプションの実装
+- 多くの場面では、「スキーマで定義したクエリ、ミューテーション、サブスクリプションの実装」を意味する
 
     <img src="./img/GraphQL-Resolver_1.png" />
 
     <img src="./img/GraphQL-Resolver_2.svg" />
+
+    <br>
+
+    - しかし、この考え方だと [Resolver Chain](./GraphQL/GraphQL_Resolver.md#イメージで理解する-resolver-chain) が理解しにくかったので、次の定義をしっかり理解したほうがいい
+
+<br>
+
+- ★正しくは「スキーマで定義した“フィールド”に対応する値を返すための関数」
+
+    <img src="./img/GraphQL-Resolver_3.svg" />
+
+    - 詳しくは[こちら](./GraphQL_Resolver.md)を参照
 
 <br>
 <br>
@@ -232,8 +244,6 @@
         <br>
 
         - 1つ以上のフィールドを持つデータ構造を定義する型
-
-            - 各フィールドは名前と型
 
             - ★フィールドには他のオブジェクト型を含むこともできる
 
@@ -343,13 +353,9 @@
 
         - ★★Input Object のフィールドに定義できるのは スカラー型、Enum 型、他の Input Object 型
 
-             TODO: 画像を作成
-
         <br>
 
         - Input Object は [Query](#クエリ型-query)、[Mutation](#ミューテーション型-mutation)、[Subscription](#サブスクリプション型-subscription) の戻り値の型として指定することはできない
-
-            TODO: 画像を作成
 
     <br>
 
@@ -367,7 +373,7 @@
 
         <br>
 
-        - `type`　キーワードで宣言する
+        - `type` キーワードで宣言する
 
         <br>
 
@@ -381,9 +387,9 @@
 
         <br>
 
-        - ★引数の型に Object 型は指定できない
-
         - 戻り値の型にはスカラー型、Enum 型、Object 型を指定することができる
+
+        - ★引数の型に Object 型は指定できない (Input Object、スカラー、Enum 型 は OK)
 
     <br>
 
@@ -413,7 +419,7 @@
 
         <br>
 
-        - ★引数の型に Object 型は指定できない
+        - ★引数の型に Object 型は指定できない (Input Object、スカラー、Enum 型 は OK)
 
     <br>
 
@@ -437,7 +443,7 @@
 
         - [Query](#クエリ型-query)、[Mutation](#ミューテーション型-mutation) と同様に引数なしの操作は定義可能だが、戻り値なしの操作は定義できない
 
-            - - ★引数の型に Object 型も指定できない
+            - ★引数の型に Object 型も指定できない
 
 <br>
 
@@ -453,7 +459,7 @@
 
 - フィールドのデータ型を `[]` でくくると、そのフィールドは配列であることを表す
 
-- ★フィールドのデータ型 `!` をつけると、そのフィールドが Non-Null (Null になることがない) を表す
+- ★フィールドのデータ型の末尾に `!` をつけると、そのフィールドが Non-Null (Null になることがない) を表す
 
     - リスト (`[]`) と `!` の組み合わせはいくつかあり、それぞれ意味合いが違うので注意
 
@@ -544,7 +550,9 @@
 
     - 実際にその独自のデータ型の具体定内容はリゾルバーで記述する必要がある
 
-        - TODO 画像を追記
+        - クライアントからサーバーへは文字列で送信される
+
+    <img src="./img/GraphQL-Custom-Scalar_1.svg" />
 
 <br>
 <br>
@@ -552,6 +560,8 @@
 参考サイト
 
 [GraphQL Scalars便利だなぁ🚀](https://zenn.dev/yun8boo/articles/a8a9088db88d98)
+
+[GraphQL スキーマ仕様: 組み込みのスカラー型とカスタムスカラー型](https://maku.blog/p/tw75a7p/)
 
 ---
 
@@ -574,11 +584,97 @@
 - ★そもそも、ライブラリを使うことで「どのメソッドで送るのか」や「どこにクエリを含めるのか」を意識しなくてもいいようになっている
 
 <br>
+
+### クエリ文
+
+<img src="./img/GraphQL-Query-Payload_1.svg" />
+
+<br>
+
+- クエリ (POST) はリクエストボディ (JSON の場合) に3つの要素を含む
+
+    - #### query
+
+        - クエリ本体となるGraphQLサーバーへの問い合わせ文
+
+            <img src="./img/GraphQL-Query-Payload_2.svg" />
+    
+    <br>
+
+    - #### variables
+
+        - [query](#query) に渡すパラメーター
+
+            <img src="./img/GraphQL-Query-Payload_3.svg" />
+
+    <br>
+
+    - #### operationName
+
+        - クエリにつける名前みたいなもの ([後のセクション](#操作名有りクエリ)でなぜ名前をつけるのかわかる)
+
+            <img src="./img/GraphQL-Query-Payload_4.svg" />
+            
+<br>
+
+- ★操作名無しクエリと操作名有りクエリの2つが存在する
+
+    - #### 操作名無しクエリ
+
+        - query のトップレベルに名前がないクエリ= operationName が null
+
+            <img src="./img/GraphQL-Query-Payload_5.svg" />
+    
+    <br>
+
+    - #### 操作名有りクエリ
+
+        - query のトップレベルに名前があるクエリ= operationName に対象の操作名を指定する必要がある
+
+            <img src="./img/GraphQL-Query-Payload_6.svg" />
+
+        <br>
+
+        - ★1つのクエリに複数操作が含まれている場合は operationName で指定した操作が実行される
+
+            <img src="./img/GraphQL-Query-Payload_7.svg" />
+
+            - 1つのクエリに複数操作が含まれている場合は operationName で実行したい操作を指定しなければならない
+
+            - しかし、1つのクエリに複数の操作を含める必要性は無い (むしろ1クエリには１操作を心がけるべき)
+
+<br>
+
+- query フィールドの値の先頭の `query` キーワードは **「トップレベルのオペレーションが1つだけが存在」し、「operationName を使わない」** の時だけ省略できる (by [公式](https://spec.graphql.org/October2015/?utm_source=chatgpt.com#sec-Language.Query-Document))
+
+    <img src="./img/GraphQL-Query-Payload_10.svg" />
+
+<br>
+
+#### Mutation リクエスト
+
+- リクエストボディ中の [query](#query) フィールドの値の先頭に `mutation` を付ける必要がある
+
+    <img src="./img/GraphQL-Query-Payload_8.svg" />
+
+    <br>
+
+    - ★queryフィールドの値の先頭の mutation は省略できない
+
+<br>
+
+- Mutation でも操作名無しクエリと操作名有りクエリの両方で記述できる
+
+    <img src="./img/GraphQL-Query-Payload_9.svg" />
+
+<br>
 <br>
 
 参考サイト
 
 [GraphQLに入門する](https://qiita.com/jintz/items/c9105dca1725224d36a8)
+
+[呼び出し側から見たgraphql](https://zenn.dev/urotea/books/ece9493100b5be/viewer/8a6467)
 
 ---
 
@@ -607,13 +703,33 @@
 
 - #### スキーマファースト
 
-    - TODO: 説明を追記
+    - [スキーマ](#スキーマ)から開発を始める手法
+
+    - DB における ER の洗い出しのように、データ構造などから先に考える
+
+    - メリット
+
+        - 保守性が高くなる
+
+    - デメリット
+
+        - スキーマとは別に[リゾルバー](#リゾルバー)の実装が必要になり、スキーマと理ゾルバーの両方の管理・メンテナンスが必要になる
 
 <br>
 
 - #### コードファースト
 
-    - TODO: 説明を追記
+    - リゾルバーなどの実装から始める方法
+
+    - 多くの場合、他のツールを使ってコードからスキーマを自動生成する
+
+    - メリット
+
+        - コードを書いてしまえばスキーマは自動生成するのでコードのメンテナンスさえしとけばいい
+
+    - デメリット
+
+        - 可読性がスキーマよりも悪い
 
 <br>
 <br>
@@ -622,8 +738,4 @@
 
 [GraphQLをわかりやすく解説：基本概念と具体例](https://www.issoh.co.jp/tech/details/2924/#i-3)
 
----
-
-### Resolver chains
-
-- TODO: リゾルバチェーンについて追記
+[GraphQL Server実装におけるSchema FirstとCode Firstの比較](https://zenn.dev/chillnn_tech/articles/15462cffcdecd3)
