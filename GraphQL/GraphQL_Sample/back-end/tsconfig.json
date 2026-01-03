@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "nodenext",
+    "lib": ["ESNext"],
+    "sourceMap": true,
+    "outDir": "./dist",
+    "strict": true,
+    "moduleResolution": "nodenext",
+    // "baseUrl": "src",
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "rewriteRelativeImportExtensions": true
+  },
+  "include": ["src/**/*", "./codegen.ts", "schema/schema.ts"],
+  "exclude": ["dist", "node_modules"],
+  "compileOnSave": false
+}

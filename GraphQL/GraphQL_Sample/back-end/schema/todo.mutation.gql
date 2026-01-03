@@ -1,0 +1,6 @@
+type Mutation {
+  createTodo(title: String): Todo!
+  updateTodo(id: ID!): Todo!
+  deleteTodo(id: ID!): Todo!
+  deleteAll: Boolean
+}

@@ -1,0 +1,36 @@
+{
+  "name": "back-end",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "NODE_ENV=development nodemon --config ./nodemon.json",
+    "codegen": "graphql-codegen",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@apollo/server": "^5.1.0",
+    "@graphql-codegen/typescript-resolvers": "^5.1.5",
+    "@graphql-tools/load-files": "^7.0.1",
+    "@graphql-tools/merge": "^9.1.6",
+    "@prisma/adapter-better-sqlite3": "^7.0.0",
+    "@prisma/client": "^7.0.0",
+    "graphql": "^16.12.0",
+    "nodemon": "^3.1.11",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  },
+  "type": "module",
+  "devDependencies": {
+    "@graphql-codegen/cli": "^6.1.0",
+    "@graphql-codegen/typescript": "^5.0.7",
+    "@graphql-codegen/typescript-operations": "^5.0.6",
+    "@graphql-tools/graphql-tag-pluck": "^8.3.26",
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/node": "^25.0.3",
+    "prisma": "^7.0.0"
+  }
+}

@@ -1,0 +1,9 @@
+### 準備
+
+1. npm install
+
+2. プロジェクトルートに .env を作成し、以下の環境変数を追加
+
+    ```
+    VITE_SCHEMA=<GraphQLサーバーのURL>
+    ```
