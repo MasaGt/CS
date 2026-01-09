@@ -193,6 +193,8 @@
 
 ### クライアント側での利用方法 (クエリに用いる型情報ファイルの生成)
 
+*本セクションではApolloClientを利用する
+
 <img src="./img/codegen-client-side_1.svg" />
 
 <br>
@@ -243,7 +245,10 @@
             scheam: './schema/**/*.{gql, graphql}',
             generates: {
                 'output.ts': {
-                    plugins: []
+                    plugins: [
+                        'typescript',
+                        'typescript-operations'
+                    ]
                 }
             }
         }

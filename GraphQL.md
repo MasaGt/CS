@@ -884,7 +884,6 @@
 
             <img src="./img/GraphQL-Custom-Directives_5.svg" />
 
-
 <br>
 <br>
 
@@ -958,3 +957,10 @@
     - 対象が Query/Mutation/Subscription の場合 fieldConfig.resolve には関数が入っている
 
     <img src="./img/GraphQL-Custom-Directives_10.svg" />
+
+<br>
+<br>
+
+参考サイト
+
+[GraphQL Tools - Schema Directives](https://the-guild.dev/graphql/tools/docs/schema-directives)

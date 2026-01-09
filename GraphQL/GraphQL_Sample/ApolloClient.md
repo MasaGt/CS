@@ -466,24 +466,11 @@ npm install @apollo/client graphql rxjs
 
 - [useQuery](#apollo-client-で-query-実行) と同様に `@apollo/client` パッケージに含まれている `react` モジュールにて簡単に Mutation を実行してくれる `useMutation` というフックが提供されている
 
-    ```ts
-    import { gql } from "@apollo/client";
-    //★ここ★
-    import { useMutation } from "@apollo/client/react";
+    - ★useQuery と違う点として、useMutation の戻り値は配列であり、第1要素に Mutation の実行関数、第2要素に Mutation の実行結果のオブジェクトが格納される
 
-    //★mutationのクエリ文を書く
-    const CreateTodo = gql`
-        mutation CreateTodo ($title: String) {
-            createTodo (title: $title) {
-                id
-                title
-                completed
-            }
-        }
-    `;
+    - ★useQuery と違う点として、useMutation は即座には実行されず、戻り値の第1引数である関数を実行することで Mutation をリクエストする
 
-    const {loading, error, data} = useQuery(CraeteTodo, {variables: {title: "MyFirstTodo"}});
-    ```
+<img src="./img/ApolloClient-useMutation_1.svg" />
 
 <br>
 <br>
