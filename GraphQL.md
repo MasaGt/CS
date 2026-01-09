@@ -163,7 +163,7 @@
 
     <img src="./img/GraphQL-Resolver_3.svg" />
 
-    - 詳しくは[こちら](./GraphQL_Resolver.md)を参照
+    - 詳しくは[こちら](./GraphQL/GraphQL_Resolver.md)を参照
 
 <br>
 <br>
@@ -544,6 +544,8 @@
 
     - ★★カスタムスカラーはあくまでもスカラー型の1種なので、**1つの値しか持てない**
 
+<br>
+
 - `scalar` キーワードで宣言する
 
     - ★スキーマでは自作の型名だけを宣言する
@@ -562,6 +564,81 @@
 [GraphQL Scalars便利だなぁ🚀](https://zenn.dev/yun8boo/articles/a8a9088db88d98)
 
 [GraphQL スキーマ仕様: 組み込みのスカラー型とカスタムスカラー型](https://maku.blog/p/tw75a7p/)
+
+---
+
+### ディレクティブとは (Directive)
+
+- スキーマ定義に書くディレクティブもあれば、クエリに書くディレクティブもある
+
+<br>
+
+- ディレクティブはフィールドに対して定義され、`@`が接頭記号につく
+
+<br>
+
+#### 代表的なディレクティブ
+
+- `@include`
+
+    - クエリ側に記述するディレクティブ
+
+    - 対象のフィールドに対して取得する条件を設定するディレクティブ
+
+        <img src="./img/GraphQL-Directives-@include_1.svg" />
+
+<br>
+
+- `@skip`
+
+    - クエリ側に記述するディレクティブ
+
+    - 対象のフィールドに対して取得をスキップする条件を設定するディレクティブ
+
+        <img src="./img/GraphQL-Directives-@skip_1.svg" />
+
+<br>
+
+- `@depricated`
+
+    - スキーマ定義に記述するディレクティブ
+
+    - 非推奨なフィールドや Enum の値に定義する
+
+        <img src="./img/GraphQL-Directives-@depricated_1.svg" />
+
+<br>
+
+#### カスタムディレクティブ
+
+- GraphQL が標準でサポートしていないディレクティブを自分で用意する仕組み、またそのディレクティブを指す
+
+<br>
+
+- 自分で好きなようにディレクティブを定義することができる
+
+<br>
+
+- ★「スキーマ側でカスタムディレクティブの定義」と「サーバー側での具体的な処理の実装」を自分で行う必要がある
+
+    - ★★「サーバー側の出の具体的な処理の実装」については、利用する GraphQL ライブラリによって実装方法が異なるらしい
+
+    <img src="./img/GraphQL-Custom-Directives_1.svg" />
+
+<br>
+
+- 実装例は[こちら](#カスタムディレクトリの実装)
+
+<br>
+<br>
+
+参考サイト
+
+[GraphQLスキーマ完全ガイド | 理解して再利用できるスキーマ解説 - ディレクティブ](https://blog.querier.io/posts/detail/4z6k00um7ivp/#hfe495f944e)
+
+[GraphQLのディレクティブについて](https://qiita.com/koffee0522/items/bb623f974c418f5e15b0#カスタムディレクティブ)
+
+[GraphQL Code Generatorのカスタムプラグインでauth directiveに設定した認証情報を元に関数を自動生成する](https://zenn.dev/route06/articles/463047465eac29)
 
 ---
 
@@ -739,3 +816,145 @@
 [GraphQLをわかりやすく解説：基本概念と具体例](https://www.issoh.co.jp/tech/details/2924/#i-3)
 
 [GraphQL Server実装におけるSchema FirstとCode Firstの比較](https://zenn.dev/chillnn_tech/articles/15462cffcdecd3)
+
+---
+
+### カスタムディレクトリの実装
+
+- 今回は [ApolloServer](./GraphQL/GraphQL_Sample/ApolloServer.md) と [graphql-tools](https://the-guild.dev/graphql/tools/docs/schema-directives#uppercasing-strings)を使ってサーバー側でのカスタムディレクティブの実装を紹介する
+
+<br>
+
+- 必要なパッケージのインストール
+
+    ```bash
+    npm install @apollo/server graphql @graphql-tools/schema @graphql-tools/utils
+    ```
+
+    <br>
+
+    - `@graphql-tools/schema`
+
+        - スキーマ (≠スキーマ定義) の作成や結合、変換を簡単に行うためのツール
+
+            - ここでのスキーマとは GraphQLSchema instance のこと
+
+<br>
+
+#### 小文字→大文字に変換する @uppercase ディレクティブ
+
+1. スキーマ定義の作成
+
+    ```graphql
+    #カスタムディレクティブの定義
+    directive @uppercase on FIELD_DEFINITION
+
+    type User {
+        id: ID!
+        name: String! @uppercase
+        age: Int!
+    }
+
+    type Query {
+        getAllUsers: [User] @auth
+    }
+    ```
+
+<br>
+
+2. サーバー側の実装
+
+    <img src="./img/GraphQL-Custom-Directives_2.svg" />
+
+    <br>
+
+    - ↓ 実装コードのもっと詳しい解説
+
+        <img src="./img/GraphQL-Custom-Directives_3.svg" />
+
+        <br>
+
+        - MapperKind.OBJECT_FIELD についての解説
+
+            <img src="./img/GraphQL-Custom-Directives_4.svg" />
+
+            <br>
+
+        - getDirective() についての解説
+
+            <img src="./img/GraphQL-Custom-Directives_5.svg" />
+
+
+<br>
+<br>
+
+#### 権限によって取得の可否を決定する @auth ディレクティブ
+
+- イメージ
+
+    - @auth を指定されたフィールドは特定の権限がリクエストに含まれる場合に返すようにしたい
+
+    - @auth を指定するのは Query, Mutation, Subscription のフィールドと想定する
+
+    - クライアント側でクエリをリクエストする際に、headers の authorization という項目に権限を設定する
+
+<br>
+
+1. スキーマの実装
+
+    ```graphql
+    directive @auth on FIELD_DEFINITION
+    enum Role {
+        USER
+        ADMIN
+    }
+
+    type User {
+        id: ID!
+        name: String!
+        age: Int!
+    }
+
+    type Query {
+        getAllUsers: [User] @auth
+    }
+    ```
+
+<br>
+
+2. サーバー側でのカスタムディレクティブの実装
+
+    <img src="./img/GraphQL-Custom-Directives_6.svg" />
+
+<br>
+
+3. クライアント側でのリクエスト例
+
+    <img src="./img/GraphQL-Custom-Directives_7.svg" />
+
+<br>
+<br>
+
+#### 複数のカスタムディレクティブを利用する場合
+
+- ★1つの GraphQL Schema インスタンス Transformer に複数のカスタムディレクトリ処理を**記述するべきではない**
+
+    <img src="./img/GraphQL-Custom-Directives_8.svg" />
+
+<br>
+
+- 1つのカスタムディレクティブにつき1つのTransformerを用意するべき
+
+    <img src="./img/GraphQL-Custom-Directives_9.svg" />
+
+<br>
+
+#### オブジェクト型のフィールドと Query, Mutation, Subscription のフィールドに対するカスタムディレクティブの実装の違い
+
+- \[MapperKind.OBJECT_FIELD\] 関数の引数である fieldConfig は...
+
+    - 対象がオブジェクト型のフィールドの場合 fieldConfig.resolve が undefined
+
+    - 対象が Query/Mutation/Subscription の場合 fieldConfig.resolve には関数が入っている
+
+    <img src="./img/GraphQL-Custom-Directives_10.svg" />
